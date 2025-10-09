@@ -8,9 +8,9 @@ template <- readxl::read_xlsx("data/WQX_SRC_env_template.xlsx", sheet = 5)
 # Load data to be uploaded
 #data <- readxl::read_xls("C:/Users/michaelf/OneDrive - Santa Rosa County, FL/Projects/Santa Rosa Sound Water Quality/Data/WQX/WQX_SRC_ENV_Y3.xls")
 
-my_token <-auth_client(
-  client = Sys.getenv("ARCGIS_CLIENT"),
-  secret = Sys.getenv("ARCGIS_SECRET"),
+my_token <-auth_user(
+  client = Sys.getenv("ARCGIS_USER"),
+  secret = Sys.getenv("ARCGIS_PASSWORD"),
   host = arc_host(),
   expiration = 120
 )
