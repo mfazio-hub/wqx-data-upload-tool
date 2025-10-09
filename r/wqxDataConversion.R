@@ -1,5 +1,5 @@
 library(tidyverse)
-library(arcgislayers)
+library(arcgis)
 
 
 # Load Template
@@ -7,9 +7,17 @@ template <- readxl::read_xlsx("data/WQX_SRC_env_template.xlsx", sheet = 5)
 
 # Load data to be uploaded
 #data <- readxl::read_xls("C:/Users/michaelf/OneDrive - Santa Rosa County, FL/Projects/Santa Rosa Sound Water Quality/Data/WQX/WQX_SRC_ENV_Y3.xls")
+
+my_token <-auth_client(
+  client = Sys.getenv("ARCGIS_CLIENT"),
+  secret = Sys.getenv("ARCGIS_SECRET"),
+  host = arc_host(),
+  expiration = 120
+)
+
 table_url <- "https://services.arcgis.com/Eg4L1xEv2R3abuQd/arcgis/rest/services/SRCWQM_Update_20250922/FeatureServer/3"
-connection <- arc_open(table_url, token = arc_token())
-wq_table <- arc_read(table_url) 
+connection <- arc_open(table_url, token = arc_token(MY_AGOL_TOKEN))
+wq_table <- arc_read(table_url,  token = arc_token(MY_AGOL_TOKEN)) 
 
 # list of variable names for WQX format
 long <- data %>%
