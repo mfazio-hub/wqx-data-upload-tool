@@ -10,7 +10,7 @@ my_token <- auth_user(
   expiration = 120
 )
 
-table_url <- "https://services.arcgis.com/Eg4L1xEv2R3abuQd/arcgis/rest/services/SRCWQM_Update_20250922/FeatureServer/3"
+table_url <- Sys.getenv("ARCGIS_URL")
 connection <- arc_open(table_url, token = my_token)
 
 # Load AGOL and WQX Template -----------------------------------------------
