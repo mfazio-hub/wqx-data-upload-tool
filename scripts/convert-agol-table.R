@@ -1,53 +1,69 @@
 library(tidyverse)
 library(arcgis)
+library(lubridate)
+
+# fetch lists and field maps from config file
+cfg <- yaml::read_yaml("configs/config.yaml")
+
+# normalize config objects
+cfg$drop_list <- as.character(cfg$drop_list %||% character())
+cfg$params_list <- as.character(cfg$params_list %||% character())
+cfg$unit_map <- unlist(cfg$unit_map %||% list(), use.names = TRUE)
+cfg$param_name_map <- unlist(cfg$param_name_map %||% list(), use.names = TRUE)
 
 
 # Log into AGOL ------------------------------------------------------------
-my_token <- auth_user(
-  username = Sys.getenv("ARCGIS_USER"),
-  password = Sys.getenv("ARCGIS_PASSWORD"),
-  host = arc_host(),
-  expiration = 120
+my_token <- tryCatch(
+  auth_user(
+    username = Sys.getenv("ARCGIS_USER"),
+    password = Sys.getenv("ARCGIS_PASSWORD"),
+    host = arc_host(),
+    expiration = 120
+  ),
+  error = function(e) stop("ArcGIS auth failed: ", e$message)
 )
 
 table_url <- Sys.getenv("ARCGIS_URL")
-connection <- arc_open(table_url, token = my_token)
+connection <- tryCatch(
+  arc_open(table_url, token = my_token),
+  error = function(e) stop("Failed to open ArcGIS table: ", e$message)
+)
 
 # Load AGOL and WQX Template -----------------------------------------------
 template <- readxl::read_xlsx("data/WQX_SRC_env_template.xlsx", sheet = 5)
-wq_table <- arc_read(table_url, token = my_token)
+wq_table <- tryCatch(
+  arc_read(table_url, token = my_token),
+  error = function(e) stop("Failed to read AGOL table: ", e$message)
+)
 
-# Set correct time zone
-wq_table <- wq_table %>% mutate(Sample_Date = as_datetime(Sample_Date))
 
-# Enter Start Date to Filter Data
+# Begin dataframe conversion and cleaning -----------------------------------
+
+# Enter start date to filter data
 start_date <- as_date("2024-09-01")
 
-# fetch lists from config file
-config <- jsonlite::fromJSON("configs/config.json")
-drop_list <- config$drop_list
-params_list <- config$params_list
-unit_map <- config$unit_mappings
-
-
-# convert data to long form and update columns
-long <- wq_table %>%
+# Convert data to long form and update columns
+long_wq_table <- wq_table %>%
   filter(as_date(Sample_Date) >= start_date) %>% # Filter only desired dates
-  select(!any_of(drop_list)) %>% # drop columns from drop list
+  select(-any_of(cfg$drop_list)) %>% # drop columns from drop list
   pivot_longer(
-    # Pivot table to characteristic name and result value
-    cols = all_of(params_list),
+    cols = all_of(cfg$params_list), # pivot all columns in params_list to be characteristic names
     names_to = "Characteristic Name",
     values_to = "Result Value"
   ) %>%
   mutate(
-    Result_MeasureUnit = recode(`Characteristic Name`, !!!unit_map),
+    `Result Value` = as.numeric(`Result Value`),
+    Result_MeasureUnit = recode(
+      `Characteristic Name`,
+      !!!cfg$unit_map,
+      .default = NA_character_
+    ),
     .after = `Result Value`,
     `Activity Start Date` = as_date(Sample_Date), # split to date only
     `Activity Start Time` = format(Sample_Date, "%H:%M:%S"), # split to time only
-    `Sample_Date` = NULL # drop OG date column
-  )
+  ) %>%
+  select(-Sample_Date) # drop OG date column after using it
 
-# TODO: Assign values to template table
+# TODO: Assign values to template table -------------------------------------
 
-# TODO Investigate uploading straight to portal using cqx library
+# TODO Upload to WQX portal using cqx library -------------------------------

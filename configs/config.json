@@ -19,6 +19,7 @@
     "EditDate",
     "Editor"
   ],
+
   "params_list": [
     "Water_Temp",
     "DO_Percent",
@@ -40,7 +41,8 @@
     "TN",
     "TP"
   ],
-  "unit_mappings": {
+
+  "unit_map": {
     "Water_Temp": "deg C",
     "DO_Percent": "%",
     "DO_Concentration": "mg/L",
@@ -57,8 +59,35 @@
     "TSS": "mg/L",
     "Entero": "MPN/100 mL",
     "TP": "mg/L",
+    "TKN":"mg/L",
     "TN": "mg/L",
     "LA": "Kd",
     "pH": ""
+  },
+
+
+  "param_name_map": {
+    "Water_Temp": "Temperature, water",
+    "DO_Percent": "Dissolved oxygen (DO)",
+    "DO_Concentration": "Dissolved oxygen (DO)",
+    "Conductivity": "Conductivity",
+    "Salinity": "Salinity",
+    "Turbidity": "Turbidity",
+    "Secchi": "Depth, Secchi disk depth",
+    "Chl_a": "Chlorophyll a",
+    "NOx": "Nitrate + Nitrite",
+    "NO2": "Nitrite",
+    "NH4": "Ammonium",
+    "DIP": "Orthophosphate",
+    "Color": "True color",
+    "TSS": "Total suspended solids",
+    "Entero": "Enterococcus",
+    "TP": "Total Phosphorus, mixed forms",
+    "TN": "Total Nitrogen, mixed forms",
+    "TKN": "Total Kjeldahl nitrogen",
+    "LA": "Light attenuation coefficient",
+    "pH": "pH"
   }
+
 }
+

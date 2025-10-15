@@ -1,0 +1,92 @@
+# Use this config to provide lookup list and field mapping objects to be used in data cleaning script. 
+
+
+# Field names to be dropped from imported AGOL table
+drop_list:
+  - Rel_Depth
+  - last_edited_date
+  - last_edited_user
+  - Parent_GUID
+  - GlobalID_1
+  - isLive
+  - OBJECTID
+  - Weather
+  - Wind
+  - Wind_Direction
+  - Cloud_Cover
+  - Rainfall_24hr
+  - Secchi
+  - CreationDate
+  - Creator
+  - EditDate
+  - Editor
+
+
+# Look up list to determine which fields are included in the pivot to characteristic name
+params_list:
+  - Water_Temp
+  - DO_Percent
+  - DO_Concentration
+  - Conductivity
+  - Salinity
+  - pH
+  - Turbidity
+  - Chl_a
+  - NOx
+  - NO2
+  - NH4
+  - DIP
+  - LA
+  - Color
+  - TSS
+  - Entero
+  - TKN
+  - TN
+  - TP
+
+# Use this field map to set the proper units for each of the different parameters
+unit_map:
+  Water_Temp: "deg C"
+  DO_Percent: "%"
+  DO_Concentration: "mg/L"
+  Conductivity: "µS/cm"
+  Salinity: "PSU"
+  Turbidity: "FNU"
+  Secchi: "m"
+  Chl_a: "ug/L"
+  NOx: "ug/L"
+  NO2: "ug/L"
+  NH4: "ug/L"
+  DIP: "mg/L"
+  Color: "PCU"
+  TSS: "mg/L"
+  Entero: "MPN/100 mL"
+  TP: "mg/L"
+  TKN: "mg/L"
+  TN: "mg/L"
+  LA: "Kd"
+  pH: ""
+
+
+# Use this field map to set names to the proper equivalent for the EPA Water Quality Exchange
+param_name_map:
+  Water_Temp: "Temperature, water"
+  DO_Percent: "Dissolved oxygen (DO)"
+  DO_Concentration: "Dissolved oxygen (DO)"
+  Conductivity: "Conductivity"
+  Salinity: "Salinity"
+  Turbidity: "Turbidity"
+  Secchi: "Depth, Secchi disk depth"
+  Chl_a: "Chlorophyll a"
+  NOx: "Nitrate + Nitrite"
+  NO2: "Nitrite"
+  NH4: "Ammonium"
+  DIP: "Orthophosphate"
+  Color: "True color"
+  TSS: "Total suspended solids"
+  Entero: "Enterococcus"
+  TP: "Total Phosphorus, mixed forms"
+  TN: "Total Nitrogen, mixed forms"
+  TKN: "Total Kjeldahl nitrogen"
+  LA: "Light attenuation coefficient"
+  pH: "pH"
