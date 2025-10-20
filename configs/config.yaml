@@ -131,7 +131,6 @@ fixed_fields:
   "Activity Start Time Zone": "America/Chicago"
   "Result Status ID": "Accepted"
   "Activity Group Type": "Monitoring"
-  "Project ID": "Local Monitoring Project"
 
 # optional: you can define computed field templates
 computed_fields:

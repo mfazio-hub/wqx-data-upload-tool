@@ -4,12 +4,25 @@ library(lubridate)
 
 # fetch lists and field maps from config file
 cfg <- yaml::read_yaml("configs/config.yaml")
+lookup <- read_csv("configs/analyte_lookup.csv", show_col_types = FALSE) %>%
+  mutate(
+    analyte_key = str_to_upper(str_trim(analyte_key)),
+    canonical_name = if_else(
+      is.na(canonical_name) | canonical_name == "",
+      analyte_key,
+      canonical_name
+    ),
+    result_sample_fraction = if_else(
+      is.na(result_sample_fraction),
+      NA_character_,
+      result_sample_fraction
+    )
+  )
 
 # normalize config objects
 cfg$drop_list <- as.character(cfg$drop_list)
 cfg$params_list <- as.character(cfg$params_list)
-cfg$unit_map <- unlist(cfg$unit_map)
-cfg$param_name_map <- unlist(cfg$param_name_map)
+
 
 # Log into AGOL ------------------------------------------------------------
 my_token <- tryCatch(
@@ -45,6 +58,10 @@ long_wq_table <- wq_table %>%
     names_to = "Characteristic Name",
     values_to = "Result Value"
   ) %>%
+  mutate(
+    `Characteristic Name` = str_to_upper(str_trim(`Characteristic Name`))
+  ) %>%
+  left_join(lookup, by = c("Characteristic Name" = "analyte_key")) %>%
   mutate(
     `Result Value` = readr::parse_number(as.character(`Result Value`)),
     Result_MeasureUnit = recode(
