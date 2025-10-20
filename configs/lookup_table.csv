@@ -1,0 +1,21 @@
+analyte_key,canonical_name,Activity_type,unit,result_sample_fraction,analytical_method_id,method_speciation,result_analytical_method_ID,result_detection_type,result_detection_limit,sample_equipment_name,sample_collection_comment
+NH4,Ammonium,Sample-Routine,ug/L,"Filtered, field",CEDB ammonium-1,as N,UWFCEDB_WQX,Method Detection Level,1.4,Van Dorn Bottle,
+Chl_a,Chlorophyll a,Sample-Routine,ug/L,Unfiltered,CEDB chla-1,,UWFCEDB_WQX,,,Van Dorn Bottle,
+Entero,Enterococcus,Sample-Routine,MPN/100 mL,Unfiltered,ENTEROLERT,,IDEXX,Method Detection Level,10,Van Dorn Bottle,
+NOx,Nitrate + Nitrite,Sample-Routine,ug/L,"Filtered, field",CEDB nitrate and nitrite-1,as N,UWFCEDB_WQX,Method Detection Level,2.8,Van Dorn Bottle,
+NO2,Nitrite,Sample-Routine,ug/L,"Filtered, field",CEDB nitrite-1,as N,UWFCEDB_WQX,Method Detection Level,1.4,Van Dorn Bottle,
+DIP,Orthophosphate,Sample-Routine,mg/L,"Filtered, field",CEDB DIP-1,as P,UWFCEDB_WQX,Method Detection Level,1.55,Van Dorn Bottle,
+TP,Phosphorus,Sample-Routine,mg/L,Unfiltered,I-4650-03,as P,USGS,Method Detection Level,0.07,Van Dorn Bottle,
+TKN,Total Kjeldahl nitrogen (Organic N & NH3),Sample-Routine,mg/L,Unfiltered,365.4,as N,USEPA,Method Detection Level,0.2,Van Dorn Bottle,
+TSS,Total suspended solids,Sample-Routine,mg/L,Unfiltered,160.2,,USEPA,,,Van Dorn Bottle,
+Color,True color,Sample-Routine,PCU,"Filtered, field",2120-C,,APHA,,,Van Dorn Bottle,
+TN,"Total Nitrogen, mixed forms",Sample-Routine,mg/L,Unfiltered,I-4650-03,as N,USGS,,,Van Dorn Bottle,
+LA,Light attenuation coefficient,Field Msr/Obs,Kd,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Secchi,"Depth, Secchi disk depth",Field Msr/Obs,m,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Salinity,Salinity,Field Msr/Obs,PSU,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Turbidity,Turbidity,Field Msr/Obs,FNU,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Conductivity,Conductivity,Field Msr/Obs,ug/L,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+DO_Concentration,Dissolved oxygen (DO),Field Msr/Obs,mg/L,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+DO_Percent,Dissolved oxygen (DO),Field Msr/Obs,%,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Water_Temp,"Temperature, water",Field Msr/Obs,deg C,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+pH,pH,Field Msr/Obs,,,,,,,,Probe/Sensor,YSI-MultimeterProPlus

@@ -1,7 +1,7 @@
 # Use this config to provide lookup list and field mapping objects to be used in data cleaning script. 
 
 
-# Field names to be dropped from imported AGOL table
+# List of columns to drop from AGOL table
 drop_list:
   - Rel_Depth
   - last_edited_date
@@ -22,7 +22,7 @@ drop_list:
   - Editor
 
 
-# Look up list to determine which fields are included in the pivot to characteristic name
+# Columns in AGOL table to pivot
 params_list:
   - Water_Temp
   - DO_Percent
@@ -44,7 +44,29 @@ params_list:
   - TN
   - TP
 
-# Use this field map to set the proper units for each of the different parameters
+# Field obervations list
+field_obs:
+  - Temperature, water
+  - Dissolved oxygen (DO)
+  - Salinity
+  - pH
+  - Turbidity
+
+# Lab observations list
+lab_obs:
+  - Ammonium
+  - Chlorophyll a
+  - Enterococcus
+  - Nitrate + Nitrite
+  - Nitrite
+  - Orthophosphate
+  - Phosphorus
+  - Total Kjeldahl nitrogen (Organic N & NH3)
+  - Total suspended solids
+  - True color
+
+
+# Map characteristic names to units
 unit_map:
   Water_Temp: "deg C"
   DO_Percent: "%"
@@ -68,7 +90,7 @@ unit_map:
   pH: ""
 
 
-# Use this field map to set names to the proper equivalent for the EPA Water Quality Exchange
+# Map characteristic names to WQX canonical names
 param_name_map:
   Water_Temp: "Temperature, water"
   DO_Percent: "Dissolved oxygen (DO)"
@@ -85,8 +107,61 @@ param_name_map:
   Color: "True color"
   TSS: "Total suspended solids"
   Entero: "Enterococcus"
-  TP: "Total Phosphorus, mixed forms"
+  TP: "Phosphorus"
   TN: "Total Nitrogen, mixed forms"
   TKN: "Total Kjeldahl nitrogen"
   LA: "Light attenuation coefficient"
   pH: "pH"
+
+# columns from long_wq_table to copy into the WQX template
+field_map:
+  "Activity Depth/Height Measure": Water_Depth
+  "Activity Start Date": Activity Start Date
+  "Activity Start Time": Activity Start Time
+  "Characteristic Name": Characteristic Name
+  "Result Value": Result Value
+  "Result Unit": Result_MeasureUnit
+
+# default fixed values to apply to every row
+fixed_fields:
+  "Activity Depth/Height Unit": "m"
+  "Project ID": "SRC-SRSWQ"
+  "Activity Type": "Sample, water"
+  "Activity Media Name": "Water"
+  "Activity Start Time Zone": "America/Chicago"
+  "Result Status ID": "Accepted"
+  "Activity Group Type": "Monitoring"
+  "Project ID": "Local Monitoring Project"
+
+# optional: you can define computed field templates
+computed_fields:
+   "Monitoring Location ID": "SRC-{Site}-22"
+
+# filtered and unfiltered mappings 
+filter_map:
+  Ammonium: "Filtered, field"
+  Chlorophyll a: "Unfiltered"
+  Enterococcus: "Unfiltered"
+  Nitrate + Nitrite: "Filtered, field"
+  Nitrite: "Filtered, field"
+  Orthophosphate: "Filtered, field"
+  Phosphorus: "Unfiltered"
+  Total Kjeldahl nitrogen (Organic N & NH3): "Unfiltered"
+  Total Nitrogen, mixed forms : "Unfiltered"
+  Total suspended solids: "Unfiltered"
+  True color: "Filtered, field"
+
+# result analytical method Id
+analytical_methods_map:
+  Ammonium: "CEDB ammonium-1"
+  Chlorophyll a: "CEDB chla-1"
+  Enterococcus: "ENTEROLERT"
+  Nitrate + Nitrite: "CEDB nitrate and nitrite-1"
+  Nitrite: "CEDB nitrite-1"
+  Orthophosphate: "CEDB DIP-1"
+  Phosphorus: "I-4650-03"
+  Total Kjeldahl nitrogen (Organic N & NH3): "365.4"
+  Total Nitrogen, mixed forms : "I-4650-03"
+  Total suspended solids: "160.2"
+  True color: "2120-C"
+  
