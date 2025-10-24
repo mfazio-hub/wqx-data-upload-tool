@@ -16,6 +16,7 @@ drop_list:
   - Cloud_Cover
   - Rainfall_24hr
   - Secchi
+  - Conductivity
   - CreationDate
   - Creator
   - EditDate
@@ -27,7 +28,6 @@ params_list:
   - Water_Temp
   - DO_Percent
   - DO_Concentration
-  - Conductivity
   - Salinity
   - pH
   - Turbidity
@@ -163,4 +163,36 @@ analytical_methods_map:
   Total Nitrogen, mixed forms : "I-4650-03"
   Total suspended solids: "160.2"
   True color: "2120-C"
-  
+
+
+# YAML mapping between long_wq_table columns and template columns
+column_map:
+  # Activity metadata
+  Site: "Monitoring Location ID"
+  Activity_type: "Activity Type"
+  Water_Depth: "Activity Depth/Height Measure"
+  sample_equipment_name: "Sample Collection Equipment Name"
+  sample_collection_comment: "Sample Collection Equipment Comment"
+  `Activity Start Date`: "Activity Start Date"
+  `Activity Start Time`: "Activity Start Time"
+  method_speciation: "Method Speciation"
+
+  # Result details
+  `Result Value`: "Result Value"
+  unit: "Result Unit"
+  result_sample_fraction: "Result Sample Fraction"
+  analytical_method_id: "Result Analytical Method ID"
+  result_detection_type: "Result Detection/Quantitation Limit Type"
+  result_detection_limit: "Result Detection/Quantitation Limit Measure"
+  canonical_name: "Characteristic Name"
+
+  # Optional / placeholders
+  # These may need constants or NA fills in mutate()
+  Project_ID: "Project ID"
+  Activity_ID: "Activity ID (CHILD-subset)"
+  Activity_ID_Parent: "Activity ID User Supplied (PARENTs)"
+  Activity_Media_Name: "Activity Media Name"
+  Result_Status_ID: "Result Status ID"
+  Laboratory_Name: "Laboratory Name"
+  Activity_Group_ID: "Activity Group ID"
+  Activity_Group_Name: "Activity Group Name"

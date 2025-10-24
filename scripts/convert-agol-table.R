@@ -49,8 +49,8 @@ wq_table <- tryCatch(
 # Enter start date to filter data
 start_date <- as_date("2024-09-01")
 
-# Convert data to long form and update columns
-long_wq_table <- wq_table %>%
+# pivot data to wide table and update columns
+wide_wq_table <- wq_table %>%
   filter(as_date(Sample_Date) >= start_date) %>% # Filter only desired dates
   select(-any_of(cfg$drop_list)) %>% # drop columns from drop list
   pivot_longer(
@@ -64,34 +64,17 @@ long_wq_table <- wq_table %>%
   left_join(lookup, by = c("Characteristic Name" = "analyte_key")) %>%
   mutate(
     `Result Value` = readr::parse_number(as.character(`Result Value`)),
-    Result_MeasureUnit = recode(
-      `Characteristic Name`,
-      !!!cfg$unit_map,
-      .default = NA_character_
-    ),
-    .after = `Result Value`,
+    Site = paste0("SRC-", Site, "-22"),
     `Activity Start Date` = as_date(Sample_Date), # split to date only
     `Activity Start Time` = format(Sample_Date, "%H:%M:%S") # split to time only
   ) %>%
-  select(-Sample_Date) # drop OG date column after using it
+  drop_na(`Result Value`) %>% # Remove any row that does not have a result value
+  select(-c(Sample_Date, `Characteristic Name`)) # drop unused columns
 
 # TODO: Assign values to template table -------------------------------------
 
-mapped_df <- long_wq_table %>% # rename/match columns according to field_map
-  rename(!!!set_names(cfg$field_map, names(cfg$field_map))) %>% # add fixed fields (each as a new column)
-  mutate(across(everything(), as.character)) %>% # ensure string-safe glue ops
-  mutate(!!!cfg$fixed_fields) %>%
-  mutate(
-    # add computed fields using glue templates
-    !!!imap(cfg$computed_fields, ~ glue_data(long_wq_table, .x))
-  )
-
-# ensure all template columns exist
-filled_template <- template %>%
-  select(names(template)) %>% # ensure consistent col order
-  bind_cols(mapped_df) %>% # combine mapped data
-  select(names(template)) # keep only valid template columns
-
-glimpse(filled_template)
+# Rename based on YAML config
+wqx_table <- long_wq_table %>%
+  rename(!!!setNames(names(cfg$column_map), unlist(cfg$column_map)))
 
 # TODO Upload to WQX portal using cqx library -------------------------------

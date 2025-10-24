@@ -14,7 +14,7 @@ LA,Light attenuation coefficient,Field Msr/Obs,Kd,,,,,,,Probe/Sensor,YSI-Multime
 Secchi,"Depth, Secchi disk depth",Field Msr/Obs,m,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
 Salinity,Salinity,Field Msr/Obs,PSU,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
 Turbidity,Turbidity,Field Msr/Obs,FNU,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
-Conductivity,Conductivity,Field Msr/Obs,ug/L,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
+Conductivity,Conductivity,Field Msr/Obs,uS/cm,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
 DO_Concentration,Dissolved oxygen (DO),Field Msr/Obs,mg/L,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
 DO_Percent,Dissolved oxygen (DO),Field Msr/Obs,%,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
 Water_Temp,"Temperature, water",Field Msr/Obs,deg C,,,,,,,Probe/Sensor,YSI-MultimeterProPlus
