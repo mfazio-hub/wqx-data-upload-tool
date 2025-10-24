@@ -167,32 +167,17 @@ analytical_methods_map:
 
 # YAML mapping between long_wq_table columns and template columns
 column_map:
-  # Activity metadata
-  Site: "Monitoring Location ID"
-  Activity_type: "Activity Type"
-  Water_Depth: "Activity Depth/Height Measure"
-  sample_equipment_name: "Sample Collection Equipment Name"
-  sample_collection_comment: "Sample Collection Equipment Comment"
-  `Activity Start Date`: "Activity Start Date"
-  `Activity Start Time`: "Activity Start Time"
-  method_speciation: "Method Speciation"
-
-  # Result details
-  `Result Value`: "Result Value"
-  unit: "Result Unit"
-  result_sample_fraction: "Result Sample Fraction"
-  analytical_method_id: "Result Analytical Method ID"
-  result_detection_type: "Result Detection/Quantitation Limit Type"
-  result_detection_limit: "Result Detection/Quantitation Limit Measure"
-  canonical_name: "Characteristic Name"
-
-  # Optional / placeholders
-  # These may need constants or NA fills in mutate()
-  Project_ID: "Project ID"
-  Activity_ID: "Activity ID (CHILD-subset)"
-  Activity_ID_Parent: "Activity ID User Supplied (PARENTs)"
-  Activity_Media_Name: "Activity Media Name"
-  Result_Status_ID: "Result Status ID"
-  Laboratory_Name: "Laboratory Name"
-  Activity_Group_ID: "Activity Group ID"
-  Activity_Group_Name: "Activity Group Name"
+  "Monitoring Location ID": "Site"
+  "Activity Depth/Height Measure": "Water_Depth"
+  "Activity Start Date": "Activity Start Date"
+  "Activity Start Time": "Activity Start Time"
+  "Result Value": "Result Value"
+  "Characteristic Name": "canonical_name"
+  "Activity Type": "Activity_type"
+  "Result Unit": "unit"
+  "Result Sample Fraction": "result_sample_fraction"
+  "Result Analytical Method ID": "result_analytical_method_id"
+  "Result Detection/Quantitation Limit Type": "result_detection_type"
+  "Method Speciation": "method_speciation"
+  "Sample Collection Equipment Name": "sample_equipment_name"
+  "Sample Collection Equipment Comment": "sample_collection_comment"

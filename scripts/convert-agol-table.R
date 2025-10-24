@@ -73,8 +73,59 @@ wide_wq_table <- wq_table %>%
 
 # TODO: Assign values to template table -------------------------------------
 
-# Rename based on YAML config
-wqx_table <- long_wq_table %>%
-  rename(!!!setNames(names(cfg$column_map), unlist(cfg$column_map)))
+wqx_table <- wqx_table %>%
+  mutate(
+    "Project ID" <- "SRC-SRSWQ",
+    "Monitoring Location ID" <- wide_wq_table$Site,
+    "Activity ID (CHILD-subset)" <- NULL,
+    "Activity ID User Supplied (PARENTs)" <- NULL,
+    "Activity Type" <- wide_wq_table$Activity_type,
+    "Activity Media Name" <- "Water",
+    "Activity Start Date" <- wide_wq_table$`Activity Start Date`,
+    "Activity Start Time" <- wide_wq_table$`Activity Start Time`,
+    "Activity Start Time Zone" <- "CST",
+    "Activity Depth/Height Measure" <- wide_wq_table$Water_Depth,
+    "Activity Depth/Height Unit" <- "m",
+    "Sample Collection Method ID" <- "UWF-S",
+    "Sample Collection Method Context" <- NULL,
+    "Sample Collection Equipment Name" <- wide_wq_table$sample_equipment_name,
+    "Sample Collection Equipment Comment" <- wide_wq_table$sample_collection_comment,
+    "Characteristic Name" <- wide_wq_table$canonical_name,
+    "Characteristic Name User Supplied" <- NULL,
+    "Method Speciation" <- wide_wq_table$method_speciation,
+    "Result Detection Condition" <- if (wide_wq_table$`Result Value` == 0 ){
+                                        "Not Detected"
+                                        } else if (wide_wq_table$`Result Value`< wide_wq_table$result_detection_limit) {
+                                        "Present Below Quantification Limit"
+                                        } else { NULL },
+    "Result Value" <- wide_wq_table$`Result Value`,
+    "Result Unit" <- wide_wq_table$unit,
+    "Result Measure Qualifier" <- if (wqx_wq_table$`Result Detection Condition` = "Not Detected") {
+                                      "UQ"
+                                      } else {
+                                      "Q"},
+    "Result Sample Fraction" <- wide_wq_table$result_sample_fraction,
+    "Result Status ID" <- "Accepted",
+    "ResultTemperatureBasis" <- NULL,
+    "Statistical Base Code" <- NULL,
+    "ResultTimeBasis" <- NULL,
+    "Result Value Type" <- "Actual"
+    "Result Analytical Method ID" <- wide_wq_table$analytical_method_id
+    "Result Analytical Method Context" <- wide_wq_table$result_analytical_method_ID
+    "Analysis Start Date" <- NULL
+    "Result Detection/Quantitation Limit Type"
+    "Result Detection/Quantitation Limit Measure"
+    "Result Detection/Quantitation Limit Unit"
+    "Result Comment"
+    "Result Sampling Point Type"
+    "Result Sampling Point Name"
+    "Result Sampling Point Place In Series"
+    "Result Depth/Altitude Reference Point"
+    "Result Depth/Height Measure"
+    "Result Depth/Height Unit"
+    "Laboratory Name"
+    "Activity Group Type"
+    "Activity Group ID"
+    "Activity Group Name"
+  )
 
-# TODO Upload to WQX portal using cqx library -------------------------------
