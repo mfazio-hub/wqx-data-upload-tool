@@ -46,11 +46,13 @@ params_list:
 
 # Field obervations list
 field_obs:
-  - Temperature, water
-  - Dissolved oxygen (DO)
+  - Water_Temp
+  - DO_Percent
+  - DO_Concentration
   - Salinity
   - pH
   - Turbidity
+  - LA
 
 # Lab observations list
 lab_obs:
