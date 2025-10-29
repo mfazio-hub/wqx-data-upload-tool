@@ -43,6 +43,32 @@ params_list:
   - TKN
   - TN
   - TP
+  # Parameter Names According to UWF lab datasets
+  - chl a µg/L
+  - NO3-+NO2- µgN/L
+  - NO2- µgN/L
+  - NH4+ µgN/L
+  - DIP ugP/L
+  - Color PCU
+  - TSS mg/L
+  - Entero
+  - TP_mgPL
+  - TN_mgL
+  - TKN_mgL
+
+# QC Field Names
+qc_names_list:
+- NO3+NO2 QC
+- NO2 QC
+- NH4 QC
+- DIP QC
+- Chla QC
+- TKN_QC.x
+- TP_QC.x
+- TKN_QC.y
+- TP_QC.y
+- QC
+
 
 # Field obervations list
 field_obs:
@@ -53,6 +79,30 @@ field_obs:
   - pH
   - Turbidity
   - LA
+
+# QC - UWF Parameter Names to Mapp For Join
+qc_names_map:
+  NO3+NO2 QC: NOx
+  NO2 QC: NO2
+  NH4 QC: NH4
+  DIP QC: DIP
+  Chla QC: Chl_a
+  TKN_QC.x: TKN
+  TP_QC.x: TP
+  TKN_QC.y: TKN
+  TP_QC.y: TP
+  QC: Entero
+  chl a µg/L: Chl_a
+  NO3-+NO2- µgN/L: NOx
+  NO2- µgN/L: NO2
+  NH4+ µgN/L: NH4
+  DIP ugP/L: DIP
+  Entero: Entero
+  TP_mgPL: TP
+  TN_mgL: TN
+  TKN_mgL: TKN
+
+
 
 # Lab observations list
 lab_obs:
@@ -114,6 +164,22 @@ param_name_map:
   TKN: "Total Kjeldahl nitrogen"
   LA: "Light attenuation coefficient"
   pH: "pH"
+
+# UWF CEDB Fields to canonical name map
+cedb_field_map:  
+  chl a µg/L: "Chlorophyll a"
+  NO3-+NO2- µgN/L: "Nitrate + Nitrite"
+  NO2- µgN/L: "Nitrite"
+  NH4+ µgN/L: "Ammonium"
+  DIP ugP/L: "Orthophosphate"
+  Color PCU: "True color"
+  TSS mg/L: "Total suspended solids"
+  Entero: "Enterococcus"
+  TP_mgPL: "Phosphorus"
+  TN_mgL: "Total Nitrogen, mixed forms"
+  TKN_mgL: "Total Kjeldahl nitrogen"
+
+
 
 # columns from long_wq_table to copy into the WQX template
 field_map:
