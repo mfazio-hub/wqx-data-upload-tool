@@ -75,7 +75,6 @@ join_table <- dn %>%
   ) %>%
   left_join(depth, by = "JOIN")
 
-
 # pivot characteristics
 pivot_table <- join_table %>%
   select(-c(Layer, Rel_Depth, Site, Sample_Date)) %>%
@@ -94,10 +93,15 @@ pivot_table <- join_table %>%
       `Characteristic Name` == "DIP ugP/L" ~ "dip",
       `Characteristic Name` == "TN_mgL" ~ "tn",
       `Characteristic Name` == "TKN_mgL" ~ "tkn",
-      `Characteristic Name` == TRUE ~ NA_character_
+      `Characteristic Name` == "TP_mgPL.x" ~ "tp.x",
+      `Characteristic Name` == "TP_mgPL.y" ~ "tp.y",
+      `Characteristic Name` == "Color PCU" ~ "color",
+      `Characteristic Name` == "TSS mg/L" ~ "tss",
+      TRUE ~ NA_character_
     ),
     JOIN = paste(JOIN, "_", p_map)
-  )
+  ) %>%
+  select(c(ID, Date, Water_Depth, `Characteristic Name`, `Result Value`, JOIN))
 
 qc_table <- join_table %>%
   pivot_longer(
@@ -105,18 +109,37 @@ qc_table <- join_table %>%
     names_to = "QC_Name",
     values_to = "QC_Value"
   ) %>%
-  p_map = case_when(
-  QC_Name == "QC" ~ "entero",
-  QC_Name == "Chla QC" ~ "chla",
-  QC_Name == "NO3+NO2 QC" ~ "nox",
-  QC_Name == "NO2 QC" ~ "no2",
-  QC_Name == "NH4 QC" ~ "nh4",
-  QC_Name == "DIP QC" ~ "dip",
-  QC_Name == "TKN_QC.y" ~ "tkn",
-  QC_Name == "TKN_QC.x" ~ "tkn",
-  QC_Name == "TP_QC.x" ~ "tp",
-  ,
-  QC_Name == "TP_QC.y" ~ "tp",
-  QC_Name == TRUE ~ NA_character_
-) %>%
+  mutate(
+    p_map = case_when(
+      QC_Name == "QC" ~ "entero",
+      QC_Name == "Chla QC" ~ "chla",
+      QC_Name == "NO3+NO2 QC" ~ "nox",
+      QC_Name == "NO2 QC" ~ "no2",
+      QC_Name == "NH4 QC" ~ "nh4",
+      QC_Name == "DIP QC" ~ "dip",
+      QC_Name == "TKN_QC" ~ "tkn",
+      QC_Name == "TN_QC" ~ "tn",
+      QC_Name == "TP_QC.x" ~ "tp.x",
+      QC_Name == "TP_QC.y" ~ "tp.y",
+      TRUE ~ NA_character_
+    ),
+    JOIN = paste(JOIN, "_", p_map)
+  ) %>%
   select(c(QC_Name, QC_Value, JOIN))
+
+
+final_table <- pivot_table %>%
+  left_join(qc_table, by = "JOIN")
+
+rm(
+  dn,
+  ent,
+  tkntp,
+  tntp,
+  tss,
+  depth,
+  wq_table,
+  join_table,
+  qc_table,
+  pivot_table
+)

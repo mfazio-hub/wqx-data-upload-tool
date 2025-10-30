@@ -52,9 +52,11 @@ params_list:
   - Color PCU
   - TSS mg/L
   - Entero
-  - TP_mgPL
+  - TP_mgPL.x
+  - TP_mgPL.y
   - TN_mgL
   - TKN_mgL
+  - TKN_mgL.y
 
 # QC Field Names
 qc_names_list:
@@ -63,9 +65,9 @@ qc_names_list:
 - NH4 QC
 - DIP QC
 - Chla QC
-- TKN_QC.x
+- TN_QC
 - TP_QC.x
-- TKN_QC.y
+- TKN_QC
 - TP_QC.y
 - QC
 
