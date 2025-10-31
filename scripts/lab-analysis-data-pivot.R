@@ -36,7 +36,10 @@ tss <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 5) %>%
 # Load config for field mappings
 cfg <- yaml::read_yaml("configs/config.yaml")
 
-lookup <- read_csv("configs/analyte_lookup.csv", show_col_types = FALSE) %>%
+lookup_table <- read_csv(
+  "configs/analyte_lookup.csv",
+  show_col_types = FALSE
+) %>%
   mutate(
     analyte_key = str_to_upper(str_trim(analyte_key)),
     canonical_name = if_else(
@@ -80,28 +83,28 @@ pivot_table <- join_table %>%
   select(-c(Layer, Rel_Depth, Site, Sample_Date)) %>%
   pivot_longer(
     cols = any_of(cfg$params_list),
-    names_to = "Characteristic Name",
-    values_to = "Result Value"
+    names_to = "analyte",
+    values_to = "result_value"
   ) %>%
   mutate(
     p_map = case_when(
-      `Characteristic Name` == "Entero" ~ "entero",
-      `Characteristic Name` == "chl a µg/L" ~ "chla",
-      `Characteristic Name` == "NO3-+NO2- µgN/L" ~ "nox",
-      `Characteristic Name` == "NO2- µgN/L" ~ "no2",
-      `Characteristic Name` == "NH4+ µgN/L" ~ "nh4",
-      `Characteristic Name` == "DIP ugP/L" ~ "dip",
-      `Characteristic Name` == "TN_mgL" ~ "tn",
-      `Characteristic Name` == "TKN_mgL" ~ "tkn",
-      `Characteristic Name` == "TP_mgPL.x" ~ "tp.x",
-      `Characteristic Name` == "TP_mgPL.y" ~ "tp.y",
-      `Characteristic Name` == "Color PCU" ~ "color",
-      `Characteristic Name` == "TSS mg/L" ~ "tss",
+      analyte == "Entero" ~ "entero",
+      analyte == "chl a µg/L" ~ "chla",
+      analyte == "NO3-+NO2- µgN/L" ~ "nox",
+      analyte == "NO2- µgN/L" ~ "no2",
+      analyte == "NH4+ µgN/L" ~ "nh4",
+      analyte == "DIP ugP/L" ~ "dip",
+      analyte == "TN_mgL" ~ "tn",
+      analyte == "TKN_mgL" ~ "tkn",
+      analyte == "TP_mgPL.x" ~ "tp.x",
+      analyte == "TP_mgPL.y" ~ "tp.y",
+      analyte == "Color PCU" ~ "color",
+      analyte == "TSS mg/L" ~ "tss",
       TRUE ~ NA_character_
     ),
     JOIN = paste(JOIN, "_", p_map)
   ) %>%
-  select(c(ID, Date, Water_Depth, `Characteristic Name`, `Result Value`, JOIN))
+  select(c(ID, Date, Sample_Time, Water_Depth, analyte, result_value, JOIN))
 
 qc_table <- join_table %>%
   pivot_longer(
@@ -129,17 +132,35 @@ qc_table <- join_table %>%
 
 
 final_table <- pivot_table %>%
-  left_join(qc_table, by = "JOIN")
+  left_join(qc_table, by = "JOIN") %>%
+  mutate(
+    analyte = recode(
+      analyte,
+      !!!cfg$param_name_map,
+      .default = NA_character_
+    ),
+    ID = paste("SRC-", ID, "-22")
+  ) %>%
+  drop_na(result_value) %>%
+  left_join(lookup_table, by = join_by(analyte == canonical_name)) %>%
+  select(-c(analyte_key, JOIN, QC_Name))
 
 rm(
+  depth,
   dn,
   ent,
   tkntp,
   tntp,
   tss,
-  depth,
-  wq_table,
-  join_table,
+  joint_table,
   qc_table,
-  pivot_table
+  pivot_table,
+  join_table,
+  wq_table
 )
+
+# Add Analysis Dates ------------------------------------------------------------------
+
+chla_dates <- readxl::read_xlsx("data\\uwf_yr3_analysis_dates.xlsx") %>%
+  filter(Analyte == "Chla") %>%
+  select(`sample date`, `date run`)

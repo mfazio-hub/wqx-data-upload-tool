@@ -166,9 +166,7 @@ param_name_map:
   TKN: "Total Kjeldahl nitrogen"
   LA: "Light attenuation coefficient"
   pH: "pH"
-
-# UWF CEDB Fields to canonical name map
-cedb_field_map:  
+  # UWF CEDB Fields to canonical name map
   chl a µg/L: "Chlorophyll a"
   NO3-+NO2- µgN/L: "Nitrate + Nitrite"
   NO2- µgN/L: "Nitrite"
@@ -176,12 +174,10 @@ cedb_field_map:
   DIP ugP/L: "Orthophosphate"
   Color PCU: "True color"
   TSS mg/L: "Total suspended solids"
-  Entero: "Enterococcus"
-  TP_mgPL: "Phosphorus"
+  TP_mgPL.x: "Phosphorus"
+  TP_mgPL.y: "Phosphorus"
   TN_mgL: "Total Nitrogen, mixed forms"
   TKN_mgL: "Total Kjeldahl nitrogen"
-
-
 
 # columns from long_wq_table to copy into the WQX template
 field_map:
@@ -201,10 +197,6 @@ fixed_fields:
   "Activity Start Time Zone": "America/Chicago"
   "Result Status ID": "Accepted"
   "Activity Group Type": "Monitoring"
-
-# optional: you can define computed field templates
-computed_fields:
-   "Monitoring Location ID": "SRC-{Site}-22"
 
 # filtered and unfiltered mappings 
 filter_map:
@@ -233,7 +225,6 @@ analytical_methods_map:
   Total Nitrogen, mixed forms : "I-4650-03"
   Total suspended solids: "160.2"
   True color: "2120-C"
-
 
 # YAML mapping between long_wq_table columns and template columns
 column_map:
