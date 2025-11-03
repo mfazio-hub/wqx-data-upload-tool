@@ -186,7 +186,7 @@ final_table <- pivot_table %>%
   ) %>%
   drop_na(result_value) %>%
   left_join(lookup_table, by = join_by(analyte == canonical_name)) %>%
-  left_join(anl_dates, by = "ANL_JOIN") %>%
+  left_join(anl_dates, by = "ANL_JOIN", relationship = "many-to-many") %>%
   relocate(
     ID,
     Date,
