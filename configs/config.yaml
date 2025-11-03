@@ -163,7 +163,7 @@ param_name_map:
   Entero: "Enterococcus"
   TP: "Phosphorus"
   TN: "Total Nitrogen, mixed forms"
-  TKN: "Total Kjeldahl nitrogen"
+  TKN: "Total Kjeldahl nitrogen (Organic N & NH3)"
   LA: "Light attenuation coefficient"
   pH: "pH"
   # UWF CEDB Fields to canonical name map
@@ -177,7 +177,7 @@ param_name_map:
   TP_mgPL.x: "Phosphorus"
   TP_mgPL.y: "Phosphorus"
   TN_mgL: "Total Nitrogen, mixed forms"
-  TKN_mgL: "Total Kjeldahl nitrogen"
+  TKN_mgL: "Total Kjeldahl nitrogen (Organic N & NH3)"
 
 # columns from long_wq_table to copy into the WQX template
 field_map:

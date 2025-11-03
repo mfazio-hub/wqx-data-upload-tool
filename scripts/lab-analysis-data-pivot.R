@@ -1,6 +1,8 @@
 library(tidyverse)
 library(arcgis)
 
+st <- Sys.time()
+
 # Load AGOL Data ----------------------------------------------------------------------
 
 # Log into AGOL
@@ -78,9 +80,35 @@ join_table <- dn %>%
   ) %>%
   left_join(depth, by = "JOIN")
 
+
+anl_dates <-
+  readxl::read_xlsx("data\\uwf_yr3_analysis_dates.xlsx") %>%
+  mutate(
+    join_key = case_when(
+      Analyte == "Chla" ~ "chla",
+      Analyte == "NO2-" ~ "no2",
+      Analyte == "NH4+" ~ "nh4",
+      Analyte == "NO3-" ~ "nox",
+      Analyte == "DIP" ~ "dip",
+      Analyte == "Color" ~ "color",
+      Analyte == "TSS" ~ "tss",
+      Analyte == "TN/TP" ~ "tntp",
+      Analyte == "TKN" ~ "tkn",
+      Analyte == "TP" ~ "tp",
+      Analyte == "Entero" ~ "entero",
+      TRUE ~ NA_character_
+    ),
+    ANL_JOIN = if_else(
+      join_key %in% c("tss", "tkn", "tp"),
+      true = paste(Station, `sample date`, Layer, join_key, sep = "_"),
+      false = paste(`sample date`, join_key, sep = "_")
+    )
+  )
+
+
 # pivot characteristics
 pivot_table <- join_table %>%
-  select(-c(Layer, Rel_Depth, Site, Sample_Date)) %>%
+  select(-c(Rel_Depth, Site, Sample_Date)) %>%
   pivot_longer(
     cols = any_of(cfg$params_list),
     names_to = "analyte",
@@ -96,15 +124,30 @@ pivot_table <- join_table %>%
       analyte == "DIP ugP/L" ~ "dip",
       analyte == "TN_mgL" ~ "tn",
       analyte == "TKN_mgL" ~ "tkn",
-      analyte == "TP_mgPL.x" ~ "tp.x",
-      analyte == "TP_mgPL.y" ~ "tp.y",
+      analyte == "TP_mgPL.x" ~ "tp",
+      analyte == "TP_mgPL.y" ~ "tp",
       analyte == "Color PCU" ~ "color",
       analyte == "TSS mg/L" ~ "tss",
       TRUE ~ NA_character_
     ),
-    JOIN = paste(JOIN, "_", p_map)
+    JOIN = paste(JOIN, p_map, sep = "_"),
+    ANL_JOIN = if_else(
+      p_map %in% c("tss", "tkn", "tp"),
+      true = paste(JOIN),
+      false = paste(Date, p_map, sep = "_")
+    )
   ) %>%
-  select(c(ID, Date, Sample_Time, Water_Depth, analyte, result_value, JOIN))
+  select(c(
+    ID,
+    Date,
+    Sample_Time,
+    Layer,
+    Water_Depth,
+    analyte,
+    result_value,
+    JOIN,
+    ANL_JOIN
+  ))
 
 qc_table <- join_table %>%
   pivot_longer(
@@ -126,7 +169,7 @@ qc_table <- join_table %>%
       QC_Name == "TP_QC.y" ~ "tp.y",
       TRUE ~ NA_character_
     ),
-    JOIN = paste(JOIN, "_", p_map)
+    JOIN = paste(JOIN, p_map, sep = "_")
   ) %>%
   select(c(QC_Name, QC_Value, JOIN))
 
@@ -139,28 +182,40 @@ final_table <- pivot_table %>%
       !!!cfg$param_name_map,
       .default = NA_character_
     ),
-    ID = paste("SRC-", ID, "-22")
+    ID = paste("SRC", ID, "22", sep = "-"),
   ) %>%
   drop_na(result_value) %>%
   left_join(lookup_table, by = join_by(analyte == canonical_name)) %>%
+  left_join(anl_dates, by = "ANL_JOIN") %>%
+  relocate(
+    ID,
+    Date,
+    Sample_Time,
+    Layer.x,
+    Water_Depth,
+    Activity_type,
+    analyte,
+    method_speciation,
+    result_value,
+    unit,
+    sample_equipment_name,
+    QC_Value,
+    result_detection_type,
+    result_detection_limit,
+    analytical_method_id,
+    result_sample_fraction,
+    `date run`,
+    analyte,
+    `sample date`,
+    Station,
+    Layer.y,
+    join_key
+  ) %>%
   select(-c(analyte_key, JOIN, QC_Name))
 
-rm(
-  depth,
-  dn,
-  ent,
-  tkntp,
-  tntp,
-  tss,
-  joint_table,
-  qc_table,
-  pivot_table,
-  join_table,
-  wq_table
-)
-
-# Add Analysis Dates ------------------------------------------------------------------
-
-chla_dates <- readxl::read_xlsx("data\\uwf_yr3_analysis_dates.xlsx") %>%
-  filter(Analyte == "Chla") %>%
-  select(`sample date`, `date run`)
+et <- Sys.time()
+print(paste(
+  " Finished! Total runtime: ",
+  round(difftime(et, st, units = "secs"), 3),
+  "s"
+))
