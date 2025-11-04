@@ -213,6 +213,8 @@ final_table <- pivot_table %>%
   ) %>%
   select(-c(analyte_key, JOIN, QC_Name))
 
+final_table %>% writexl::write_xlsx("data/srswq_yr3_lab_results.xlsx")
+
 et <- Sys.time()
 print(paste(
   " Finished! Total runtime: ",
