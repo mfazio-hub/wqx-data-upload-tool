@@ -27,15 +27,15 @@ wq_table <- tryCatch(
 # Load Local Data ---------------------------------------------------------------------
 dn <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 1)
 tkntp <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 2) %>%
-  select(-c("ID", "Layer", "Date"))
+  select(-c("ID", "Layer")) #TODO ADD DATE BACK TO DROP
 tntp <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 3) %>%
-  select(-c("ID", "Layer", "Date"))
+  select(-c("ID", "Layer")) #TODO: ADD DATE BACK TO DROP
 ent <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 4) %>%
   select(-c("ID", "Layer", "Date"))
 tss <- readxl::read_xlsx("data\\UWF_yr3_for_SRC.xlsx", sheet = 5) %>%
   select(-c("site", "Layer", "date"))
 
-# Load config for field mappings
+# Load config and for field mappings ---------------------------------------------------
 cfg <- yaml::read_yaml("configs/config.yaml")
 
 lookup_table <- read_csv(
@@ -66,19 +66,19 @@ depth <- wq_table %>%
       Rel_Depth == "Bottom" ~ "B",
       Rel_Depth == "Surface" ~ "S"
     ),
-    JOIN = paste(Site, Sample_Date, Rel_Depth, sep = "_")
+    DEP_JOIN = paste(Site, Sample_Date, Rel_Depth, sep = "_")
   )
 
 # Join all dataframes to one table
 join_table <- dn %>%
-  full_join(tkntp, by = "JOIN") %>%
-  full_join(tntp, by = "JOIN") %>%
-  full_join(ent, by = "JOIN") %>%
-  full_join(tss, by = "JOIN") %>%
+  full_join(tkntp, join_by(DN_JOIN == TKNTP_JOIN)) %>%
+  full_join(tntp, join_by(DN_JOIN == TNTP_JOIN)) %>%
+  full_join(ent, join_by(DN_JOIN == ENT_JOIN)) %>%
+  full_join(tss, join_by(DN_JOIN == TSS_JOIN)) %>%
   mutate(
-    JOIN = paste(ID, Date, Layer, sep = "_")
+    JOIN = paste(ID, Date.x, Layer, sep = "_")
   ) %>%
-  left_join(depth, by = "JOIN")
+  left_join(depth, join_by(JOIN == DEP_JOIN))
 
 
 anl_dates <-
@@ -92,9 +92,9 @@ anl_dates <-
       Analyte == "DIP" ~ "dip",
       Analyte == "Color" ~ "color",
       Analyte == "TSS" ~ "tss",
-      Analyte == "TN/TP" ~ "tntp",
-      Analyte == "TKN" ~ "tkn",
+      Analyte == "TN" ~ "tn",
       Analyte == "TP" ~ "tp",
+      Analyte == "TKN" ~ "tkn",
       Analyte == "Entero" ~ "entero",
       TRUE ~ NA_character_
     ),
@@ -108,7 +108,7 @@ anl_dates <-
 
 # pivot characteristics
 pivot_table <- join_table %>%
-  select(-c(Rel_Depth, Site, Sample_Date)) %>%
+  select(-c(Rel_Depth, Site, Date.x)) %>%
   pivot_longer(
     cols = any_of(cfg$params_list),
     names_to = "analyte",
@@ -134,12 +134,12 @@ pivot_table <- join_table %>%
     ANL_JOIN = if_else(
       p_map %in% c("tss", "tkn", "tp"),
       true = paste(JOIN),
-      false = paste(Date, p_map, sep = "_")
+      false = paste(Sample_Date, p_map, sep = "_")
     )
   ) %>%
   select(c(
     ID,
-    Date,
+    Sample_Date,
     Sample_Time,
     Layer,
     Water_Depth,
@@ -189,7 +189,7 @@ final_table <- pivot_table %>%
   left_join(anl_dates, by = "ANL_JOIN", relationship = "many-to-many") %>%
   relocate(
     ID,
-    Date,
+    Sample_Date,
     Sample_Time,
     Layer.x,
     Water_Depth,
